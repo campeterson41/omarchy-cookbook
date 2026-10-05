@@ -1,0 +1,19 @@
+diff --git i/main.c w/main.c
+index dc5bd19..ba08f75 100644
+--- i/main.c
++++ w/main.c
+@@ -348,12 +348,12 @@ static void type_keycode(struct wtype *wtype, unsigned int key_code)
+ 			wtype->keyboard, 0, key_code, WL_KEYBOARD_KEY_STATE_PRESSED
+ 	);
+ 	wl_display_roundtrip(wtype->display);
+-	usleep(2000);
++	/* F9: compositor roundtrip acknowledges each event; no extra sleep. */
+ 	zwp_virtual_keyboard_v1_key(
+ 		wtype->keyboard, 0, key_code, WL_KEYBOARD_KEY_STATE_RELEASED
+ 	);
+ 	wl_display_roundtrip(wtype->display);
+-	usleep(2000);
++	/* F9: compositor roundtrip acknowledges each event; no extra sleep. */
+ }
+ 
+ static void run_text(struct wtype *wtype, struct wtype_command *cmd)

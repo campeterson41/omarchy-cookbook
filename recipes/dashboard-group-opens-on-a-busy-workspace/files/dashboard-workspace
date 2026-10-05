@@ -1,0 +1,60 @@
+#!/bin/bash
+set -u
+exec 9>"${XDG_RUNTIME_DIR:-/tmp}/dashboard-workspace-$UID.lock"
+flock -n 9 || exit 0
+notify-send 'Dashboards' 'Connecting your dashboards…' 2>/dev/null || true
+ports=(8001 8000 8080)
+for port in "${ports[@]}"; do
+  if ! curl -s --max-time 2 -o /dev/null "http://127.0.0.1:$port/"; then
+    systemctl --user start "dashboard-tunnel-$port.service"
+  fi
+done
+failed=()
+for port in "${ports[@]}"; do
+  ready=false
+  for attempt in {1..15}; do
+    if curl -s --max-time 2 -o /dev/null "http://127.0.0.1:$port/"; then ready=true; break; fi
+    sleep 1
+  done
+  "$ready" || failed+=("$port")
+done
+if ((${#failed[@]})); then
+  notify-send -u critical 'Dashboards connection problem' "Could not reach ports: ${failed[*]}. Click Dashboards to retry." 2>/dev/null || true
+  exit 1
+fi
+# Pick the lowest numbered workspace without windows, excluding visible
+# workspaces on other monitors so the new window opens on this monitor.
+workspace=$(python3 - <<'PYWORKSPACE'
+import json, subprocess
+workspaces = json.loads(subprocess.check_output(["hyprctl", "workspaces", "-j"]))
+monitors = json.loads(subprocess.check_output(["hyprctl", "monitors", "-j"]))
+occupied = {w["id"] for w in workspaces if w["windows"] > 0}
+elsewhere = {m["activeWorkspace"]["id"] for m in monitors if not m["focused"]}
+candidate = 1
+while candidate in occupied or candidate in elsewhere:
+    candidate += 1
+print(candidate)
+PYWORKSPACE
+) || exit 1
+before=$(hyprctl clients -j | jq '[.[].address]')
+hyprctl dispatch "hl.dsp.focus({ workspace = \"$workspace\" })" >/dev/null || exit 1
+# --new-window keeps the dashboards out of existing browser windows.
+# Launch directly to avoid Omarchy's helper focusing an existing browser.
+systemd-run --user --quiet --collect --unit="dashboard-browser-$(date +%s%N)" \
+  --property=StandardOutput=null --property=StandardError=null \
+  uwsm-app -- /usr/bin/chromium --new-window \
+  'http://127.0.0.1:8001/' 'http://127.0.0.1:8000/' 'http://127.0.0.1:8080/' 9>&-
+# Keep the new window on the chosen workspace even if focus changed during boot.
+for attempt in {1..40}; do
+  address=$(hyprctl clients -j | jq -r --argjson before "$before" \
+    'first(.[] | select(.class == "chromium") | select(.address as $a | $before | index($a) | not)).address // empty')
+  if [[ -n "$address" ]]; then
+    hyprctl dispatch "hl.dsp.window.move({ workspace = \"$workspace\", window = \"address:$address\", follow = false })" >/dev/null
+    hyprctl dispatch "hl.dsp.focus({ workspace = \"$workspace\" })" >/dev/null
+    hyprctl dispatch "hl.dsp.focus({ window = \"address:$address\" })" >/dev/null
+    exit 0
+  fi
+  sleep 0.25
+done
+notify-send -u critical 'Dashboards' 'The new browser window did not appear. Click the icon to retry.' 2>/dev/null || true
+exit 1

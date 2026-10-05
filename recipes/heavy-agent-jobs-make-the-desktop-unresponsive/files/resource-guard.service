@@ -1,0 +1,12 @@
+[Unit]
+Description=Shared local resource monitor
+
+[Service]
+ExecStart=%h/.local/bin/resource-guard daemon
+Restart=on-failure
+RestartSec=3
+Nice=10
+UMask=0077
+
+[Install]
+WantedBy=default.target

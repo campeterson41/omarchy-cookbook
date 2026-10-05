@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Send the whole sequence in one Hyprland call. Explicit modifiers keep the
+# physically held Super key out of the text field.
+hyprctl repl '
+  for _, stroke in ipairs({
+    { mods = "", key = "Home" },
+    { mods = "SHIFT", key = "End" },
+    { mods = "", key = "BackSpace" },
+  }) do
+    hl.dispatch(hl.dsp.send_key_state({ mods = stroke.mods, key = stroke.key, state = "down" }))
+    hl.dispatch(hl.dsp.send_key_state({ mods = stroke.mods, key = stroke.key, state = "up" }))
+  end
+' >/dev/null

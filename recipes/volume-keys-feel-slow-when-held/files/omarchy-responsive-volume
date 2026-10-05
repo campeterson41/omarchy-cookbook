@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+case "${1:-}" in
+  up) wpctl set-volume --limit 1.0 @DEFAULT_AUDIO_SINK@ 5%+ ;;
+  down) wpctl set-volume --limit 1.0 @DEFAULT_AUDIO_SINK@ 5%- ;;
+  mute) wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle ;;
+  *) exit 2 ;;
+esac
+
+# The OSD command is much slower than changing volume. Keep it off the key
+# response path, and share one display worker across a held key's repeats.
+(
+  exec 9>"${XDG_RUNTIME_DIR:-/tmp}/omarchy-responsive-volume.lock"
+  flock -n 9 || exit 0
+
+  previous=""
+  unchanged=0
+  while ((unchanged < 2)); do
+    state=$(wpctl get-volume @DEFAULT_AUDIO_SINK@) || exit 0
+    if [[ $state != "$previous" ]]; then
+      previous=$state
+      unchanged=0
+      if [[ $state =~ Volume:\ ([0-9.]+) ]]; then
+        percent=$(awk -v volume="${BASH_REMATCH[1]}" 'BEGIN { printf "%.0f", volume * 100 }')
+        icon=volume-high
+        if [[ $state == *\[MUTED\]* ]] || ((percent == 0)); then
+          icon=volume-muted
+        fi
+        omarchy-osd -i "$icon" -p "$percent" || true
+      fi
+    else
+      ((unchanged += 1))
+    fi
+    sleep 0.08
+  done
+) >/dev/null 2>&1 </dev/null &

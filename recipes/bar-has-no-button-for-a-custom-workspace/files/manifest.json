@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "cam.workspace",
+  "name": "Workspace launcher",
+  "version": "1.0.0",
+  "author": "Cam",
+  "description": "Open a configured local workspace",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Workspace",
+    "description": "Open your local workspace",
+    "category": "Productivity",
+    "allowMultiple": false,
+    "defaultSection": "center"
+  }
+}

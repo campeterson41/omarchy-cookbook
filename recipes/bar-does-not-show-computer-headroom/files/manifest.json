@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "cam.resources",
+  "name": "Computer resources",
+  "version": "1.1.0",
+  "author": "Cam",
+  "description": "Live CPU, memory, swap and disk headroom",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "ResourceStatus.qml"
+  },
+  "barWidget": {
+    "displayName": "Computer resources",
+    "category": "System",
+    "allowMultiple": false
+  }
+}

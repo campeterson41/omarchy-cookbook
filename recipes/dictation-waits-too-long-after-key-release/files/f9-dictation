@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+action=${1:-toggle}
+exec 9>"${XDG_RUNTIME_DIR:?}/f9-dictation.lock"
+flock 9
+if [[ "$action" == start || "$action" == toggle ]]; then
+  systemctl --user start f9-streaming.service
+fi
+exec "$HOME/.local/share/f9-streaming/venv/bin/python" "$HOME/.local/share/f9-streaming/streaming_daemon.py" "$action"

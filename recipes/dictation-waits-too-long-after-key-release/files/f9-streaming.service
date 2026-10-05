@@ -1,0 +1,14 @@
+[Unit]
+Description=Resident local streaming dictation
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/share/f9-streaming/venv/bin/python %h/.local/share/f9-streaming/streaming_daemon.py daemon --model %h/.local/share/f9-streaming/moonshine-models/download.moonshine.ai/model/small-streaming-en/quantized_26_08_21
+Restart=on-failure
+RestartSec=1
+TimeoutStopSec=3
+
+[Install]
+WantedBy=graphical-session.target
