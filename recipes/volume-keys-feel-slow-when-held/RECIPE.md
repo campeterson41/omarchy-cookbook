@@ -46,7 +46,7 @@ Keyboards exposing F8/F10/F11/F12. These keys replace application function keys 
   "tested_on": {"omarchy": "4.0.4", "hyprland": "0.56.2"},
   "applies_to": "Keyboards exposing F8/F10/F11/F12.",
   "requires": [{"command": "wpctl"}, {"command": "omarchy-osd"}, {"command": "flock"}],
-  "touches": ["~/.local/bin/omarchy-responsive-volume", "~/.config/hypr/bindings.lua"],
+  "touches": ["~/.local/bin/omarchy-responsive-volume", "~/.config/hypr/bindings.lua", "/run/user/<uid>/omarchy-responsive-volume.lock"],
   "root": false,
   "network": false,
   "installs": [],

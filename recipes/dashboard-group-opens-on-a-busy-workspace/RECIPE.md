@@ -41,7 +41,7 @@ Hyprland with Chromium and existing local dashboard services. Port numbers are e
   "tested_on": {"omarchy": "4.0.4", "hyprland": "0.56.2"},
   "applies_to": "Hyprland with Chromium and existing local dashboard services.",
   "requires": [{"command": "chromium"}, {"command": "hyprctl"}, {"command": "python3"}, {"command": "jq"}, {"command": "curl"}, {"command": "flock"}],
-  "touches": ["~/.local/bin/dashboard-workspace"],
+  "touches": ["~/.local/bin/dashboard-workspace", "/run/user/<uid>/dashboard-workspace-<uid>.lock"],
   "root": false,
   "network": true,
   "installs": [],

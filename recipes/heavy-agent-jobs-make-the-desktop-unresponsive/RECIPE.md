@@ -48,7 +48,7 @@ Linux systems with a systemd user manager and /proc telemetry. This is cooperati
   "tested_on": {"omarchy": "4.0.4", "hyprland": "0.56.2"},
   "applies_to": "Linux systems with a systemd user manager and /proc telemetry.",
   "requires": [{"command": "python3"}, {"command": "systemd-run"}, {"command": "ionice"}],
-  "touches": ["~/.local/share/resource-guard/guard.py", "~/.local/bin/resource-guard", "~/.config/systemd/user/resource-guard.service"],
+  "touches": ["~/.local/share/resource-guard/guard.py", "~/.local/bin/resource-guard", "~/.config/systemd/user/resource-guard.service", "/run/user/<uid>/resource-guard/"],
   "root": true,
   "network": false,
   "installs": [],

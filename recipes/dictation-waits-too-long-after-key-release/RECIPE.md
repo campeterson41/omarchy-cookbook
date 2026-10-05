@@ -48,6 +48,8 @@ Remove the F9 and toggle overrides; restore any prior bindings. Stop the service
 
 English local dictation on Wayland. Speech recognition is imperfect and memory intensive. Bounded finalization can emit an unfinished transcript. The author’s older laptop uses this backend, but each new machine needs model/latency validation. Downloads occur during setup; recording stays local. The daemon does not preserve transcript text, except a deliberately configured output file or clipboard fallback.
 
+The original F9 bindings match modifiers exactly. Holding Shift, Ctrl, Alt, or Super when releasing F9 can prevent the stop binding from matching. If this happens, adapt both bindings with `ignore_mods = true` after checking your Hyprland version; the backend commands remain unchanged. The 120-second safety limit is a fallback, not a substitute for a working release binding.
+
 ## History
 
 - Created by [@campeterson41](https://github.com/campeterson41) on 2026-10-05, from an existing local customization.
@@ -63,7 +65,7 @@ English local dictation on Wayland. Speech recognition is imperfect and memory i
   "tested_on": {"omarchy": "4.0.4", "hyprland": "0.56.2", "moonshine-voice": "0.1.5", "vosk": "0.3.45"},
   "applies_to": "English local dictation on Wayland.",
   "requires": [{"command": "python3"}, {"command": "parec"}, {"command": "wl-copy"}, {"command": "notify-send"}],
-  "touches": ["~/.local/share/f9-streaming/", "~/.local/bin/f9-dictation", "~/.config/systemd/user/f9-streaming.service", "~/.config/hypr/bindings.lua", "~/.local/state/f9-streaming/last-result.json"],
+  "touches": ["~/.local/share/f9-streaming/", "~/.local/bin/f9-dictation", "~/.config/systemd/user/f9-streaming.service", "~/.config/hypr/bindings.lua", "~/.local/state/f9-streaming/last-result.json", "/run/user/<uid>/f9-streaming/", "/run/user/<uid>/f9-dictation.lock"],
   "root": false,
   "network": true,
   "installs": ["venv/moonshine-voice==0.1.5", "venv/vosk==0.3.45", "venv/numpy==2.5.3", "Moonshine and Vosk local models", "custom f9-wtype (separate recipe)"],
