@@ -17,7 +17,7 @@ python3 -m venv ~/.local/share/f9-streaming/venv
 ~/.local/share/f9-streaming/venv/bin/pip install moonshine-voice==0.1.5 vosk==0.3.45 numpy==2.5.3
 ```
 
-Use the local wtype variant described in the separate dictated-text-types-slowly recipe, installing it as `~/.local/share/f9-streaming/f9-wtype`. You also need `parec`, `wl-copy`, `notify-send`, and the optional Voxtype OSD binary. Copy [files/f9-streaming.service](files/f9-streaming.service) to `~/.config/systemd/user/` and set its `--model` argument to your local model directory. Copy [files/f9-dictation](files/f9-dictation) to executable `~/.local/bin/f9-dictation`.
+Use the local wtype variant described in the separate dictated-text-types-slowly recipe, installing it as `~/.local/share/f9-streaming/f9-wtype`. You also need `parec`, `wl-copy`, `notify-send`, and the optional Voxtype OSD binary. If the Voxtype OSD executable is absent, keep `--no-osd` in the service’s ExecStart command. Copy [files/f9-streaming.service](files/f9-streaming.service) to `~/.config/systemd/user/` and set its `--model` argument to your local model directory. Copy [files/f9-dictation](files/f9-dictation) to executable `~/.local/bin/f9-dictation`.
 
 ```bash
 systemctl --user daemon-reload
