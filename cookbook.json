@@ -1,0 +1,9 @@
+{
+  "owner": "campeterson41",
+  "kitchen": "v0.5.0",
+  "description": "Omarchy customizations from Cam.",
+  "allow": [
+    "Cam",
+    "omarchy"
+  ]
+}
